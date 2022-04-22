@@ -4,6 +4,7 @@ Resampling functions for audio programming. This is forked form the [resampy](ht
 # Prerequisites
 
 | Name | Version |
+| :--- | :---    |
 | CMake | 3.18<= |
 
 # Build
@@ -23,7 +24,6 @@ $ cmake -G"Visual Studio 16 2019" .. -DUSE_ISPC=1
 # WIP
 At first, I try to improve processing time performance with the Intel's ISPC.
 Because I don't have enough ability, the ISPC routine is super slow than the raw C++ function.
-Moreover, the ISPC don't work well on Linux platforms, 
 
 # License
-You can use this software under the resampy's license without my copyright notice.
+You can use this software under the resampy's license, see LICENSE.

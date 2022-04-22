@@ -9,9 +9,15 @@ function(add_ispcs ISPC_OBJECTS FILES)
         set(OBJECT_FILES "${OBJECT_FILES};${OBJECT_FILE}")
         string(REPLACE ".ispc" ".ispc.h" HEADER_FILE ${SOURCE_FILE})
         message("header:${HEADER_FILE}")
-        add_custom_command(OUTPUT ${OBJECT_FILE}
-            COMMAND ${ISPC_BIN} ${SOURCE_FILE} -o ${OBJECT_FILE} --target=${ISPC_TARGET} --arch=${ISPC_ARCH} --cpu=${ISPC_CPU} -h ${HEADER_FILE}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        if(CMAKE_HOST_WIN32)
+            add_custom_command(OUTPUT ${OBJECT_FILE}
+                COMMAND ${ISPC_BIN} ${SOURCE_FILE} -o ${OBJECT_FILE} --opt=disable-assertions --target=${ISPC_TARGET} --arch=${ISPC_ARCH} --cpu=${ISPC_CPU} -h ${HEADER_FILE}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        else()
+            add_custom_command(OUTPUT ${OBJECT_FILE}
+                COMMAND ${ISPC_BIN} ${SOURCE_FILE} -o ${OBJECT_FILE} --pic --opt=disable-assertions --target=${ISPC_TARGET} --arch=${ISPC_ARCH} --cpu=${ISPC_CPU} -h ${HEADER_FILE}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        endif()
     endforeach()
     set(${ISPC_OBJECTS} ${OBJECT_FILES} PARENT_SCOPE)
 endfunction(add_ispcs)
@@ -83,7 +89,7 @@ elseif(UNIX)
         set(DEFAULT_CXX_FLAGS "${DEFAULT_CXX_FLAGS} -DRESAMCPP_ISPC")
     endif()
 
-    set(DEFAULT_CXX_FLAGS "-DRESAMCPP_WAV -Wall -O2 -std=c++17 -std=gnu++17 -march=native")
+    set(DEFAULT_CXX_FLAGS "-DRESAMCPP_WAV -Wall -O2 -std=c++17 -std=gnu++17 -march=native -fPIE")
     set(CMAKE_CXX_FLAGS "${DEFAULT_CXX_FLAGS}")
 elseif(APPLE)
 endif()
